@@ -5,14 +5,24 @@ from .result import Result
 
 
 class Solver:
-    def precompute_lookup_tables(self, game):
+    def precompute(self, game):
         """
         ゲーム設定 (game) に基づいて、lookupテーブルを前計算します。
             - self.all_secrets: 全ての秘密（かつ質問）の数列（タプル）のリスト
             - self.all_secrets_dict: 秘密（質問）からそのインデックスへの写像
-            - self.hit_table, self.blow_table: 質問×秘密の応答（ヒット・ブロー）を表す2次元ndarray
+            - self.hit_table, self.blow_table: 質問x秘密の応答（ヒット・ブロー）を表す2次元ndarray
         """
         self.game = game
+        self._next_question_cache = {}
+        self.positions_perms = list(itertools.permutations(range(game.num_digits)))
+        if game.allow_duplicates:
+            self.all_secrets = [
+                tuple(p) for p in itertools.product(game.digits, repeat=game.num_digits)
+            ]
+        else:
+            self.all_secrets = [
+                tuple(p) for p in itertools.permutations(game.digits, game.num_digits)
+            ]
         self.all_secrets_dict = {
             secret: idx for idx, secret in enumerate(self.all_secrets)
         }
@@ -36,13 +46,11 @@ class Solver:
         self.hit_table = np.array(hit_table)
         self.blow_table = np.array(blow_table)
 
-    @staticmethod
-    def canonicalize_question_history(history_questions, num_digits):
+    def canonicalize_question_history(self, history_questions):
         """
         これまでの質問履歴（各質問はタプル）について、桁の位置入れ替えと数字のリラベリングを全パターン試し、
         辞書順で最小となる正規化表現を返します。これにより、対称な質問列は同一視できます。
         """
-        positions_perms = list(itertools.permutations(range(num_digits)))
 
         def normalize_digits(seq):
             mapping = {}
@@ -59,21 +67,21 @@ class Solver:
             return tuple(normalized)
 
         best = None
-        for perm in positions_perms:
+        for perm in self.positions_perms:
             transformed = tuple(tuple(q[i] for i in perm) for q in history_questions)
             normalized = normalize_digits(transformed)
             if best is None or normalized < best:
                 best = normalized
         return best
 
-    def next_question_candidates_from_history(self, history_questions, num_digits):
+    def next_question_candidates_from_history(self, history_questions):
         """
         これまでの質問履歴（history_questions: 質問のタプルの並び）から、
         対称性により同一と見なされる候補質問を重複排除して生成します。
         キャッシュキーは、履歴の正規化表現のみ（回答情報は含まない）です。
         戻り値は、候補質問のインデックスのリスト（numpy配列）です。
         """
-        canon = self.canonicalize_question_history(history_questions, num_digits)
+        canon = self.canonicalize_question_history(history_questions)
 
         if canon in self._next_question_cache:
             return self._next_question_cache[canon]
@@ -83,7 +91,7 @@ class Solver:
             if candidate in history_questions:
                 continue  # 既に実施した質問は除外
             new_history = history_questions + (candidate,)
-            canon_new = self.canonicalize_question_history(new_history, num_digits)
+            canon_new = self.canonicalize_question_history(new_history)
             candidate_idx = self.all_secrets_dict[candidate]
             if canon_new not in rep_candidates:
                 rep_candidates[canon_new] = candidate_idx
@@ -94,12 +102,12 @@ class Solver:
     def solve_state(self, history, candidates, depth_limit=float("inf")):
         """
         局面を再帰的に解いて、(最小期待手数, Result) を返します。
-          - history: (質問インデックス, 回答) のペアのタプル列
-          - candidates: 現在の候補解（秘密の数列のインデックスを格納したnumpy配列）
-          - depth_limit: 反復深化のための残り探索深度
+            - history: (質問インデックス, 回答) のペアのタプル列
+            - candidates: 現在の候補解（秘密の数列のインデックスを格納したnumpy配列）
+            - depth_limit: 反復深化のための残り探索深度
         終了条件:
-          - 候補解が1個の場合は terminal branch として解を返す。
-          - 深さ制限 (depth_limit == 0) に達した場合は、十分な解が見つかっていないと判断し、
+            - 候補解が1個の場合は terminal branch として解を返す。
+            - 深さ制限 (depth_limit == 0) に達した場合は、十分な解が見つかっていないと判断し、
             expected_moves を float("inf") として返します。
         """
         if depth_limit == 0:
@@ -135,8 +143,7 @@ class Solver:
         # 履歴の質問は、各ペアの質問インデックスを実際の質問タプルに変換して取得する
         history_questions = tuple(self.all_secrets[q_idx] for (q_idx, _) in history)
         candidate_question_indices = self.next_question_candidates_from_history(
-            history_questions,
-            self.game.num_digits,
+            history_questions
         )
 
         for q_idx in candidate_question_indices:
@@ -152,6 +159,8 @@ class Solver:
                 group_candidates = candidates[inverse_indices == group_idx]
                 response_groups[tuple(response)] = group_candidates
 
+            if len(response_groups) == 1:
+                continue
             expected_cost = 0.0
             children_results = {}
             for response, group in response_groups.items():
@@ -200,21 +209,10 @@ class Solver:
         条件を満たす解が得られない場合は、expected_movesが float("inf") となります。
         最終的に、Result内の候補解と質問を元の形式に戻して返します。
         """
-        self.game = game
-        self._next_question_cache = {}
-        if game.allow_duplicates:
-            self.all_secrets = [
-                tuple(p) for p in itertools.product(game.digits, repeat=game.num_digits)
-            ]
-        else:
-            self.all_secrets = [
-                tuple(p) for p in itertools.permutations(game.digits, game.num_digits)
-            ]
-        self.precompute_lookup_tables(game)
+        self.precompute(game)
         print("Precomputation done.")
         initial_candidates = np.arange(len(self.all_secrets))
         initial_history = ()
-
         depth_limit = 1
         while True:
             print(f"Solving with depth limit = {depth_limit}")
@@ -222,7 +220,9 @@ class Solver:
             if result.expected_moves < float("inf"):
                 break
             depth_limit += 1
-
+        print(
+            f"Number of items in the next question cache: {len(self._next_question_cache)}"
+        )
         restored_result = self.restore_result(result)
         print("Solving and restoring done.")
         return restored_result
