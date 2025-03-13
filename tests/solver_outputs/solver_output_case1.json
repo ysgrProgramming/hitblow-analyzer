@@ -1,47 +1,8 @@
 {
   "best_question": "001",
   "expected_moves": 2.25,
-  "candidates": "101 110 010 000 100 001 111 011",
+  "candidates": "000 001 010 011 100 101 110 111",
   "children": {
-    "2H0B": {
-      "best_question": "011",
-      "expected_moves": 1.6666666666666665,
-      "candidates": "101 000 011",
-      "children": {
-        "1H2B": {
-          "best_question": "101",
-          "expected_moves": 1.0,
-          "candidates": "101",
-          "children": {
-            "3H0B": {
-              "best_question": null,
-              "expected_moves": 0,
-              "candidates": "101",
-              "children": {}
-            }
-          }
-        },
-        "1H0B": {
-          "best_question": "000",
-          "expected_moves": 1.0,
-          "candidates": "000",
-          "children": {
-            "3H0B": {
-              "best_question": null,
-              "expected_moves": 0,
-              "candidates": "000",
-              "children": {}
-            }
-          }
-        },
-        "3H0B": {
-          "best_question": null,
-          "expected_moves": 0,
-          "candidates": "011",
-          "children": {}
-        }
-      }
-    },
     "0H2B": {
       "best_question": "110",
       "expected_moves": 1.0,
@@ -55,10 +16,23 @@
         }
       }
     },
+    "1H0B": {
+      "best_question": "111",
+      "expected_moves": 1.0,
+      "candidates": "111",
+      "children": {
+        "3H0B": {
+          "best_question": null,
+          "expected_moves": 0,
+          "candidates": "111",
+          "children": {}
+        }
+      }
+    },
     "1H2B": {
       "best_question": "010",
       "expected_moves": 1.5,
-      "candidates": "100 010",
+      "candidates": "010 100",
       "children": {
         "1H2B": {
           "best_question": "100",
@@ -81,24 +55,50 @@
         }
       }
     },
+    "2H0B": {
+      "best_question": "011",
+      "expected_moves": 1.6666666666666665,
+      "candidates": "000 011 101",
+      "children": {
+        "1H0B": {
+          "best_question": "000",
+          "expected_moves": 1.0,
+          "candidates": "000",
+          "children": {
+            "3H0B": {
+              "best_question": null,
+              "expected_moves": 0,
+              "candidates": "000",
+              "children": {}
+            }
+          }
+        },
+        "1H2B": {
+          "best_question": "101",
+          "expected_moves": 1.0,
+          "candidates": "101",
+          "children": {
+            "3H0B": {
+              "best_question": null,
+              "expected_moves": 0,
+              "candidates": "101",
+              "children": {}
+            }
+          }
+        },
+        "3H0B": {
+          "best_question": null,
+          "expected_moves": 0,
+          "candidates": "011",
+          "children": {}
+        }
+      }
+    },
     "3H0B": {
       "best_question": null,
       "expected_moves": 0,
       "candidates": "001",
       "children": {}
-    },
-    "1H0B": {
-      "best_question": "111",
-      "expected_moves": 1.0,
-      "candidates": "111",
-      "children": {
-        "3H0B": {
-          "best_question": null,
-          "expected_moves": 0,
-          "candidates": "111",
-          "children": {}
-        }
-      }
     }
   }
 }

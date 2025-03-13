@@ -1,5 +1,6 @@
 import pytest
 from hitblow_analyzer import Game, Solver
+import json
 
 
 @pytest.mark.parametrize(
@@ -23,9 +24,9 @@ def test_solver_solve(digits, num_digits, allow_duplicates, expected_file):
     solver = Solver()
     result = solver.solve(game)
     # Result クラスで __str__ または適切なシリアライズが実装されている前提です
-    result_str = result.to_json()
+    result_dict = result.to_dict()
 
     with open(expected_file, "r", encoding="utf-8") as f:
-        expected_output = f.read().strip()
-
-    assert result_str == expected_output
+        expected_file = f.read().strip()
+    expected_dict = json.loads(expected_file)
+    assert result_dict == expected_dict

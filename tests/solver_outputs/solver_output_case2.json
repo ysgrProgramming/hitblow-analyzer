@@ -1,78 +1,78 @@
 {
     "best_question": "012",
     "expected_moves": 2.5,
-    "candidates": "021 120 210 201 012 102",
+    "candidates": "012 021 102 120 201 210",
     "children": {
-        "1H2B": {
-        "best_question": "021",
-        "expected_moves": 2.0,
-        "candidates": "210 021 102",
-        "children": {
-            "0H3B": {
-            "best_question": "102",
+        "0H3B": {
+            "best_question": "120",
             "expected_moves": 1.5,
-            "candidates": "210 102",
+            "candidates": "120 201",
             "children": {
                 "0H3B": {
-                "best_question": "210",
-                "expected_moves": 1.0,
-                "candidates": "210",
-                "children": {
-                    "3H0B": {
-                    "best_question": null,
-                    "expected_moves": 0,
-                    "candidates": "210",
-                    "children": {}
+                    "best_question": "201",
+                    "expected_moves": 1.0,
+                    "candidates": "201",
+                    "children": {
+                        "3H0B": {
+                            "best_question": null,
+                            "expected_moves": 0,
+                            "candidates": "201",
+                            "children": {}
+                        }
                     }
-                }
                 },
                 "3H0B": {
-                "best_question": null,
-                "expected_moves": 0,
-                "candidates": "102",
-                "children": {}
+                    "best_question": null,
+                    "expected_moves": 0,
+                    "candidates": "120",
+                    "children": {}
                 }
             }
-            },
-            "3H0B": {
-            "best_question": null,
-            "expected_moves": 0,
-            "candidates": "021",
-            "children": {}
-            }
-        }
         },
-        "0H3B": {
-        "best_question": "120",
-        "expected_moves": 1.5,
-        "candidates": "201 120",
-        "children": {
-            "0H3B": {
-            "best_question": "201",
-            "expected_moves": 1.0,
-            "candidates": "201",
+        "1H2B": {
+            "best_question": "021",
+            "expected_moves": 2.0,
+            "candidates": "021 102 210",
             "children": {
+                "0H3B": {
+                    "best_question": "102",
+                    "expected_moves": 1.5,
+                    "candidates": "102 210",
+                    "children": {
+                        "0H3B": {
+                            "best_question": "210",
+                            "expected_moves": 1.0,
+                            "candidates": "210",
+                            "children": {
+                                "3H0B": {
+                                    "best_question": null,
+                                    "expected_moves": 0,
+                                    "candidates": "210",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "3H0B": {
+                            "best_question": null,
+                            "expected_moves": 0,
+                            "candidates": "102",
+                            "children": {}
+                        }
+                    }
+                },
                 "3H0B": {
-                "best_question": null,
-                "expected_moves": 0,
-                "candidates": "201",
-                "children": {}
+                    "best_question": null,
+                    "expected_moves": 0,
+                    "candidates": "021",
+                    "children": {}
                 }
             }
-            },
-            "3H0B": {
-            "best_question": null,
-            "expected_moves": 0,
-            "candidates": "120",
-            "children": {}
-            }
-        }
         },
         "3H0B": {
-        "best_question": null,
-        "expected_moves": 0,
-        "candidates": "012",
-        "children": {}
+            "best_question": null,
+            "expected_moves": 0,
+            "candidates": "012",
+            "children": {}
         }
     }
 }
