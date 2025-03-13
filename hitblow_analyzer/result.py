@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
 import json
+from typing import Optional
 
 
 @dataclass
 class Result:
-    best_question: tuple | None = None
+    best_question: Optional[tuple] = None
     expected_moves: float = 0
     # children: キーは応答 (tuple)、値は Result または Result のリスト
     children: dict = field(default_factory=dict)

@@ -8,9 +8,9 @@ class Solver:
     def precompute_lookup_tables(self, game):
         """
         ゲーム設定 (game) に基づいて、lookupテーブルを前計算します。
-          - self.all_secrets: 全ての秘密（かつ質問）の数列（タプル）のリスト
-          - self.all_secrets_dict: 秘密（質問）からそのインデックスへの写像
-          - self.hit_table, self.blow_table: 質問×秘密の応答（ヒット・ブロー）を表す2次元ndarray
+            - self.all_secrets: 全ての秘密（かつ質問）の数列（タプル）のリスト
+            - self.all_secrets_dict: 秘密（質問）からそのインデックスへの写像
+            - self.hit_table, self.blow_table: 質問×秘密の応答（ヒット・ブロー）を表す2次元ndarray
         """
         self.game = game
         self.all_secrets_dict = {
